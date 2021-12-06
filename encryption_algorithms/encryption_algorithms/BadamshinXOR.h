@@ -1,13 +1,12 @@
 #include <iostream>
 #include <sstream>
 
-using namespace std;
 
 
 #ifndef ALGORITHMS_H
 #define ALGORITHMS_H
 
 // Badamshin Marat
-string xorAlgorithms(string&);
+std::string xorAlgorithms(std::string&, unsigned char);
 
 #endif // !ALGORITHMS_H
