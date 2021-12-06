@@ -35,7 +35,7 @@ int main(int argc, char* argv)
 	for (const auto& file : filesInAndOut)
 	{
 		// Timers for methods
-		std::chrono::nanoseconds time_XOR, time_RC4, time_RSA;
+		long long time_XOR = 0, time_RC4 = 0, time_RSA = 0;
 		fin.open(file.first);
 		foutXOR.open(file.second[xorPosition]);
 		foutRC4.open(file.second[rc4Position]);
@@ -49,11 +49,15 @@ int main(int argc, char* argv)
 				auto start_time = std::chrono::steady_clock::now();
 				resultStr = xorAlgorithms(data, keyXOR);
 				auto end_XOR = std::chrono::steady_clock::now();
-				time_XOR += std::chrono::duration_cast<std::chrono::nanoseconds>(end_XOR - start_time);
+				time_XOR += std::chrono::duration_cast<std::chrono::nanoseconds>(end_XOR - start_time).count();
 				foutXOR << resultStr;
 				// RC4
 				// RSA
 			}
+			std::cout << "\nName of file: " << file.first << std::endl
+				<< "Time XOR: " << time_XOR << std::endl
+				<< "Time RC4: " << time_RC4<< std::endl
+				<< "Time RSA: " << time_RSA << std::endl;
 		}
 		else
 			std::cerr << "ERROR!!! The file for input or output did not open." << std::endl;
