@@ -2,16 +2,25 @@
 #include <fstream>
 #include <vector>
 #include <random>
+#include <map>
+#include <chrono>
 
 
 int main(int argc, char* argv)
 {
 	// Files for reading and outputting data
-	std::vector<std::string>fileNamesInput {"data1.txt", "data2.txt", "data3.txt", "data4.txt"};
-	std::vector<std::string>fileNamesOutput {"result1.txt", "result2.txt", "result3.txt", "result4.txt"};
+	std::map<std::string, std::vector<std::string>> filesInAndOut{
+		{ "data1.txt", { "result1XOR.txt", "result1RC4.txt", "result1RSA.txt" } },
+		{ "data2.txt", { "result2XOR.txt", "result2RC4.txt", "result2RSA.txt"} },
+		{ "data3.txt", { "result3XOR.txt", "result3RC4.txt", "result3RSA.txt"} }
+	};
+	// Positions method in Map
+	size_t xorPosition = 0, rc4Position = 1, rsaPosition = 2;
 	// Input and output streams
 	std::ifstream fin;
-	std::ofstream fout;
+	std::ofstream foutXOR;
+	std::ofstream foutRC4;
+	std::ofstream foutRSA;
 	// Strings
 	std::string data;
 	std::string resultStr;
@@ -23,23 +32,35 @@ int main(int argc, char* argv)
 	std::uniform_int_distribution<int> dist(0, 256);
 	// Generating the xor key
 	keyXOR = dist(gen);
-	for (size_t i = 0; i < fileNamesInput.size(); i++)
+	for (const auto& file : filesInAndOut)
 	{
-		fin.open(fileNamesInput[i]);
-		fout.open(fileNamesOutput[i]);
-		if (fin.is_open() && fout.is_open())
+		// Timers for methods
+		std::chrono::nanoseconds time_XOR, time_RC4, time_RSA;
+		fin.open(file.first);
+		foutXOR.open(file.second[xorPosition]);
+		foutRC4.open(file.second[rc4Position]);
+		foutRSA.open(file.second[rsaPosition]);
+		if (fin.is_open() && foutXOR.is_open() && foutRC4.is_open() && foutRSA.is_open())
 		{
 			while (!fin.eof())
 			{
 				getline(fin, data);
+				// XOR
+				auto start_time = std::chrono::steady_clock::now();
 				resultStr = xorAlgorithms(data, keyXOR);
-				std::cout << resultStr;
+				auto end_XOR = std::chrono::steady_clock::now();
+				time_XOR += std::chrono::duration_cast<std::chrono::nanoseconds>(end_XOR - start_time);
+				foutXOR << resultStr;
+				// RC4
+				// RSA
 			}
 		}
 		else
-			std::cerr << "ERROR!!! The file named " << fileNamesInput[i] << " or " << fileNamesOutput[i] << " did not open." << std::endl;
+			std::cerr << "ERROR!!! The file for input or output did not open." << std::endl;
+		foutXOR.close();
+		foutRC4.close();
+		foutRSA.close();
 		fin.close();
-		fout.close();
 	}
 	return 0;
 };

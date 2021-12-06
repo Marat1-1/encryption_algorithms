@@ -142,7 +142,6 @@
     <ClCompile Include="BadamshinXOR.cpp" />
     <ClCompile Include="cRC4.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="RSA_Strokin.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BadamshinXOR.h" />
