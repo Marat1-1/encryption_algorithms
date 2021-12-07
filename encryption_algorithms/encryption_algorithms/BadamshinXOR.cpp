@@ -3,7 +3,7 @@
 
 
 // Badamshin Marat, XOR
-std::string xorAlgorithms(std::string& input, unsigned char key)
+std::string xorAlgorithms(const std::string& input, unsigned char key)
 {
 	std::string result;
 	for (size_t i = 0; i < input.size(); i++)

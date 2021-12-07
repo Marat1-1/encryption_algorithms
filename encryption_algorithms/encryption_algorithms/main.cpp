@@ -1,4 +1,6 @@
 #include "BadamshinXOR.h"
+#include "RSA.h"
+#include "RC4.h"
 #include <fstream>
 #include <vector>
 #include <random>
@@ -6,7 +8,7 @@
 #include <chrono>
 
 
-int main(int argc, char* argv)
+int main()
 {
 	// Files for reading and outputting data
 	std::map<std::string, std::vector<std::string>> filesInAndOut{
@@ -15,23 +17,23 @@ int main(int argc, char* argv)
 		{ "data3.txt", { "result3XOR.txt", "result3RC4.txt", "result3RSA.txt"} }
 	};
 	// Positions method in Map
-	size_t xorPosition = 0, rc4Position = 1, rsaPosition = 2;
+	int xorPosition = 0, rc4Position = 1, rsaPosition = 2;
 	// Input and output streams
 	std::ifstream fin;
-	std::ofstream foutXOR;
-	std::ofstream foutRC4;
-	std::ofstream foutRSA;
+	std::ofstream foutXOR, foutRC4, foutRSA;
 	// Strings
-	std::string data;
-	std::string resultStr;
+	std::string resultXOR, resultRSA,resultRC4, data;
 	// Keys
 	unsigned char keyXOR;
 	// Random number generation from 0 to 256
 	std::random_device rd;
 	std::mt19937 gen(rd());
 	std::uniform_int_distribution<int> dist(0, 256);
-	// Generating the xor key
+	// Generating the xor, rc4 key
 	keyXOR = dist(gen);
+	std::string keyRC4 = "RTX";
+	// Object class RC4
+	RC4 rc4(keyRC4);
 	for (const auto& file : filesInAndOut)
 	{
 		// Timers for methods
@@ -44,15 +46,25 @@ int main(int argc, char* argv)
 		{
 			while (!fin.eof())
 			{
-				getline(fin, data);
+				fin >> data;
 				// XOR
 				auto start_time = std::chrono::steady_clock::now();
-				resultStr = xorAlgorithms(data, keyXOR);
+				resultXOR = xorAlgorithms(data, keyXOR);
 				auto end_XOR = std::chrono::steady_clock::now();
 				time_XOR += std::chrono::duration_cast<std::chrono::nanoseconds>(end_XOR - start_time).count();
-				foutXOR << resultStr;
-				// RC4
+				foutXOR << resultXOR;
 				// RSA
+				auto start_RSA = std::chrono::steady_clock::now();
+				resultRSA = RSA(data);
+				auto end_RSA = std::chrono::steady_clock::now();
+				time_RSA += std::chrono::duration_cast<std::chrono::nanoseconds>(end_RSA - start_RSA).count();
+				foutRSA << resultRSA;
+				// RC4
+				auto start_RC4 = std::chrono::steady_clock::now();
+				resultRC4 = rc4.encrypt(data);
+				auto end_RC4 = std::chrono::steady_clock::now();
+				time_RC4 += std::chrono::duration_cast<std::chrono::nanoseconds>(end_RC4 - start_RC4).count();
+				foutRC4 << resultRC4;
 			}
 			std::cout << "\nName of file: " << file.first << std::endl
 				<< "Time XOR: " << time_XOR << std::endl

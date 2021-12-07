@@ -7,6 +7,6 @@
 #define ALGORITHMS_H
 
 // Badamshin Marat
-std::string xorAlgorithms(std::string&, unsigned char);
+std::string xorAlgorithms(const std::string&, unsigned char);
 
 #endif // !ALGORITHMS_H

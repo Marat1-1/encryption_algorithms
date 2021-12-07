@@ -24,12 +24,18 @@
     <ClCompile Include="cRC4.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="RSA_Strokin.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BadamshinXOR.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="cRC4.h">
+    <ClInclude Include="RC4.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="RSA.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
