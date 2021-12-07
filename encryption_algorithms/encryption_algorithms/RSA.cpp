@@ -2,65 +2,83 @@
 
 const int P = 11, Q = 13;
 
+auto generatePublicKeys(int p, int q) {
+    long int n, t, e;
+    // 1. Вычисляется их произведение n = p ⋅ q, которое называется модулем.
+    n = p * q;
+    // 2. Вычисляется значение функции Эйлера от числа n: φ(n) = (p−1)⋅(q−1)
+    t = (p - 1) * (q - 1);
+    // 3. Выбирается целое число e ( 1 < e < φ(n) ), взаимно простое со значением функции Эйлера (t)
+  //	  Число e называется открытой экспонентой
+    e = calculateE(t);
+    return std::make_pair(n, e);
+}
+
+auto generatePrivateKeys(int p, int q) {
+    long int n, t, d;
+    n = p * q;
+    t = (p - 1) * (q - 1);
+    // 4. Вычисляется число d, мультипликативно обратное к числу e по модулю φ(n), то есть число, удовлетворяющее сравнению:
+//    d ⋅ e ≡ 1 (mod φ(n))
+    d = calculateD(generatePublicKeys(p, q).second, t);
+    return std::make_pair(n, d);
+}
+
 std::string RSA(const std::string& msg)
 {
-    long int n, t, e, d;
-
-
-    long int encryptedText[100];
-    memset(encryptedText, 0, sizeof(encryptedText));
+    std::vector<long int> encryptedText(msg.size());
 
     std::string result;
 
-    bool flag;
+    auto public_key = generatePublicKeys(P, Q);
 
-    // 1. Вычисляется их произведение n = p ⋅ q, которое называется модулем.
-    n = P * Q;
-
-    // 2. Вычисляется значение функции Эйлера от числа n: φ(n) = (p−1)⋅(q−1)
-    t = (P - 1) * (Q - 1);
-
-    // 3. Выбирается целое число e ( 1 < e < φ(n) ), взаимно простое со значением функции Эйлера (t)
-    //	  Число e называется открытой экспонентой
-    e = calculateE(t);
-
-    // 4. Вычисляется число d, мультипликативно обратное к числу e по модулю φ(n), то есть число, удовлетворяющее сравнению:
-    //    d ⋅ e ≡ 1 (mod φ(n))
-    d = calculateD(e, t);
-
-    // 5. Пара {e, n} публикуется в качестве открытого ключа RSA
-    //std::cout << "\nRSA public key is (n = " << n << ", e = " << e << ")" << std::endl;
-
-    // 6. Пара {d, n} играет роль закрытого ключа RSA и держится в секрете
-    //std::cout << "RSA private key is (n = " << n << ", d = " << d << ")" << std::endl;
+    auto private_key = generatePrivateKeys(P, Q);
 
     // encryption
 
-    for (long int i = 0; i < msg.length(); i++)
+    for (long int i = 0; i < msg.size(); i++)
     {
-        encryptedText[i] = encrypt(msg[i], e, n);
+        encryptedText[i] = encrypt(msg[i], public_key);
     }
 
     for (long int i = 0; i < msg.length(); i++)
     {
-        result += (char)encryptedText[i];
+        result += encryptedText[i];
     }
-
-    return result;
 
     //decryption
+    return result;
+}
 
-    //for (long int i = 0; i < msg.length(); i++)
-    //{
-      //  decryptedText[i] = decrypt(encryptedText[i], d, n);
-   // }
+std::string deRSA(const std::string& msg) {
 
-    //std::cout << "\n\nTHE DECRYPTED MESSAGE IS:" << std::endl;
+    std::vector<long int> encryptedText(msg.size());
 
-    //for (long int i = 0; i < msg.length(); i++)
-    //{
-      //  printf("%c", (char)decryptedText[i]);
-    //}
+    std::string result;
+
+    auto public_key = generatePublicKeys(P, Q);
+
+    auto private_key = generatePrivateKeys(P, Q);
+
+    // encryption
+
+    for (long int i = 0; i < msg.size(); i++)
+    {
+        encryptedText[i] = encrypt(msg[i], public_key);
+    }
+
+    std::vector<long int> decryptedText(msg.size());
+
+    for (long int i = 0; i < msg.size(); i++)
+    {
+        decryptedText[i] = decrypt(encryptedText[i], private_key);
+    }
+
+    for (long int i = 0; i < encryptedText.size(); i++)
+    {
+        result += (char)decryptedText[i];
+    }
+    return result;
 }
 
 long int calculateE(long int t)
@@ -116,33 +134,33 @@ long int calculateD(long int e, long int t)
 }
 
 
-long int encrypt(long int i, long int e, long int n)
+long int encrypt(long int i, std::pair<long, long> key)
 {
     long int current, result;
 
     current = i - 97;
     result = 1;
 
-    for (long int j = 0; j < e; j++)
+    for (long int j = 0; j < key.second; j++)
     {
         result = result * current;
-        result = result % n;
+        result = result % key.first;
     }
 
     return result;
 }
 
-long int decrypt(long int i, long int d, long int n)
+long int decrypt(long int i, std::pair<long int, long int> key)
 {
     long int current, result;
 
     current = i;
     result = 1;
 
-    for (long int j = 0; j < d; j++)
+    for (long int j = 0; j < key.second; j++)
     {
         result = result * current;
-        result = result % n;
+        result = result % key.first;
     }
 
     return result + 97;
