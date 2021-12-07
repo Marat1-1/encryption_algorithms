@@ -1,4 +1,4 @@
-#include "BadamshinXOR.h"
+#include "XOR.h"
 #include "RSA.h"
 #include "RC4.h"
 #include <fstream>
@@ -22,18 +22,11 @@ int main()
 	std::ifstream fin;
 	std::ofstream foutXOR, foutRC4, foutRSA;
 	// Strings
-	std::string resultXOR, resultRSA,resultRC4, data;
-	// Keys
-	unsigned char keyXOR;
-	// Random number generation from 0 to 256
-	std::random_device rd;
-	std::mt19937 gen(rd());
-	std::uniform_int_distribution<int> dist(0, 256);
-	// Generating the xor, rc4 key
-	keyXOR = dist(gen);
-	std::string keyRC4 = "RTX";
+	std::string resultXOR, resultRSA, resultRC4, data;
+	// Key for methods
+	std::string key = "RTX";
 	// Object class RC4
-	RC4 rc4(keyRC4);
+	RC4 rc4(key);
 	for (const auto& file : filesInAndOut)
 	{
 		// Timers for methods
@@ -44,15 +37,16 @@ int main()
 		foutRSA.open(file.second[rsaPosition]);
 		if (fin.is_open() && foutXOR.is_open() && foutRC4.is_open() && foutRSA.is_open())
 		{
+			// Encryption
 			while (!fin.eof())
 			{
 				fin >> data;
 				// XOR
 				auto start_time = std::chrono::steady_clock::now();
-				resultXOR = xorAlgorithms(data, keyXOR);
+				resultXOR = xorAlgorithms(data, key);
 				auto end_XOR = std::chrono::steady_clock::now();
 				time_XOR += std::chrono::duration_cast<std::chrono::nanoseconds>(end_XOR - start_time).count();
-				foutXOR << resultXOR;
+				foutXOR << resultXOR + " ";
 				// RSA
 				auto start_RSA = std::chrono::steady_clock::now();
 				resultRSA = RSA(data);

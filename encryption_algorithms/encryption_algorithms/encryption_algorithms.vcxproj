@@ -139,13 +139,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="BadamshinXOR.cpp" />
-    <ClCompile Include="cRC4.cpp" />
+    <ClCompile Include="XOR.cpp" />
+    <ClCompile Include="RC4.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="RSA_Strokin.cpp" />
+    <ClCompile Include="RSA.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BadamshinXOR.h" />
+    <ClInclude Include="XOR.h" />
     <ClInclude Include="RC4.h" />
     <ClInclude Include="RSA.h" />
   </ItemGroup>

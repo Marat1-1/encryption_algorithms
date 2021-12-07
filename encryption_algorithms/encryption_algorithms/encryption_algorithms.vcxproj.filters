@@ -18,18 +18,18 @@
     <ClCompile Include="main.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="BadamshinXOR.cpp">
+    <ClCompile Include="XOR.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="cRC4.cpp">
+    <ClCompile Include="RC4.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="RSA_Strokin.cpp">
+    <ClCompile Include="RSA.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BadamshinXOR.h">
+    <ClInclude Include="XOR.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="RC4.h">
