@@ -18,15 +18,16 @@ int main()
 	};
 	// Positions method in Map
 	int xorPosition = 0, rc4Position = 1, rsaPosition = 2;
-	// Input and output streams
+	// Input and output streams for encryption
 	std::ifstream fin;
 	std::ofstream foutXOR, foutRC4, foutRSA;
 	// Strings
-	std::string resultXOR, resultRSA, resultRC4, data;
+	std::string resultEncryptXOR, resultEncryptRSA, resultEncryptRC4, data;
 	// Key for methods
 	std::string key = "RTX";
 	// Object class RC4
 	RC4 rc4(key);
+	// Encryption
 	for (const auto& file : filesInAndOut)
 	{
 		// Timers for methods
@@ -40,25 +41,25 @@ int main()
 			// Encryption
 			while (!fin.eof())
 			{
-				fin >> data;
+				getline(fin, data);
 				// XOR
 				auto start_time = std::chrono::steady_clock::now();
-				resultXOR = xorAlgorithms(data, key);
+				resultEncryptXOR = xorAlgorithms(data, key);
 				auto end_XOR = std::chrono::steady_clock::now();
 				time_XOR += std::chrono::duration_cast<std::chrono::nanoseconds>(end_XOR - start_time).count();
-				foutXOR << resultXOR + " ";
+				foutXOR << resultEncryptXOR;
 				// RSA
 				auto start_RSA = std::chrono::steady_clock::now();
-				resultRSA = RSA(data);
+				resultEncryptRSA = RSA(data);
 				auto end_RSA = std::chrono::steady_clock::now();
 				time_RSA += std::chrono::duration_cast<std::chrono::nanoseconds>(end_RSA - start_RSA).count();
-				foutRSA << resultRSA;
+				foutRSA << resultEncryptRSA;
 				// RC4
 				auto start_RC4 = std::chrono::steady_clock::now();
-				resultRC4 = rc4.encrypt(data);
+				resultEncryptRC4 = rc4.encrypt(data);
 				auto end_RC4 = std::chrono::steady_clock::now();
 				time_RC4 += std::chrono::duration_cast<std::chrono::nanoseconds>(end_RC4 - start_RC4).count();
-				foutRC4 << resultRC4;
+				foutRC4 << resultEncryptRC4;
 			}
 			std::cout << "\nName of file: " << file.first << std::endl
 				<< "Time XOR: " << time_XOR << std::endl
